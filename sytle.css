@@ -1,98 +1,267 @@
-/* ===== RESET BÁSICO ===== */
+/* ==========================================================
+   BOLETIM DIGITAL — ESTILO
+   Cor principal: roxo | Cor secundária: lilás claro
+   Visual: moderno, cards arredondados, responsivo
+   ========================================================== */
+
+/* ----- Variáveis de cor (fáceis de trocar depois) ----- */
+:root {
+  --roxo: #6a1b9a;          /* cor principal */
+  --roxo-escuro: #4a148c;   /* tom mais escuro do roxo */
+  --lilas: #ce93d8;         /* cor secundária (lilás claro) */
+  --lilas-claro: #f3e5f5;   /* fundo suave lilás */
+  --branco: #ffffff;
+  --texto: #2e1a3a;         /* texto escuro arroxeado */
+  --texto-suave: #6b5b73;
+  --bom: #2e7d32;           /* verde para bom desempenho */
+  --atencao: #c62828;       /* vermelho para atenção */
+  --neutro: #7e57c2;        /* roxo suave para "sem nota" */
+  --sombra: 0 6px 18px rgba(106, 27, 154, 0.15);
+}
+
+/* ----- Reset básico ----- */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* ===== VARIÁVEIS DE COR ===== */
-:root {
-  --roxo-principal: #6a0dad;
-  --lilas-claro: #c8a2e0;
-  --lilas-fundo: #f3e8ff;
-  --branco: #ffffff;
-  --texto-escuro: #2d1b3d;
-}
-
-/* ===== CORPO DA PÁGINA ===== */
+/* ----- Corpo da página ----- */
 body {
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background-color: var(--lilas-fundo);
-  color: var(--texto-escuro);
-  padding: 20px;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background: linear-gradient(160deg, #faf5fc 0%, #f0e6f6 100%);
+  color: var(--texto);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* ===== CABEÇALHO ===== */
-header {
-  background-color: var(--roxo-principal);
+/* ==========================================================
+   CABEÇALHO
+   ========================================================== */
+.cabecalho {
+  background: linear-gradient(135deg, var(--roxo) 0%, var(--lilas) 100%);
   color: var(--branco);
-  padding: 24px;
-  border-radius: 16px;
   text-align: center;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 12px rgba(106, 13, 173, 0.3);
+  padding: 32px 20px;
+  border-radius: 0 0 28px 28px;
+  box-shadow: var(--sombra);
 }
 
-header h1 {
+.cabecalho h1 {
   font-size: 2rem;
-  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
 }
 
-header p {
+.subtitulo {
   font-size: 1rem;
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
-/* ===== ÁREA DOS CARTÕES ===== */
-main {
+/* ==========================================================
+   CONTEÚDO PRINCIPAL
+   ========================================================== */
+.conteudo {
+  flex: 1;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 18px 40px;
+}
+
+/* ==========================================================
+   CARDS DE RESUMO
+   ========================================================== */
+.cards-resumo {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
+  /* No computador: 5 colunas iguais; no celular vira 1 (ver media query) */
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
 }
 
-/* ===== CARTÃO DE MATÉRIA ===== */
-.cartao {
-  background-color: var(--branco);
-  border-radius: 16px;
-  padding: 20px;
-  border-top: 6px solid var(--roxo-principal);
-  box-shadow: 0 4px 10px rgba(106, 13, 173, 0.15);
+.card {
+  background: linear-gradient(150deg, var(--roxo) 0%, var(--lilas) 100%);
+  color: var(--branco);
+  border-radius: 20px;
+  padding: 20px 16px;
+  box-shadow: var(--sombra);
+  text-align: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.cartao:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 18px rgba(106, 13, 173, 0.3);
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(106, 27, 154, 0.28);
 }
 
-.cartao h2 {
-  color: var(--roxo-principal);
-  font-size: 1.3rem;
-  margin-bottom: 8px;
-}
-
-.cartao .professor {
-  color: #777;
-  font-size: 0.9rem;
-  margin-bottom: 12px;
-}
-
-.cartao .nota {
-  font-size: 1.1rem;
-  margin-bottom: 8px;
-}
-
-.cartao .nota strong {
-  color: var(--roxo-principal);
-  font-size: 1.6rem;
-}
-
-.cartao .situacao {
-  display: inline-block;
-  background-color: var(--lilas-claro);
-  color: var(--texto-escuro);
-  padding: 4px 12px;
-  border-radius: 999px;
+.card h2 {
   font-size: 0.85rem;
-  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-weight: 600;
+  opacity: 0.95;
+  margin-bottom: 10px;
+}
+
+/* O número grande de destaque dentro do card */
+.valor-card {
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+
+.descricao-card {
+  font-size: 0.75rem;
+  opacity: 0.9;
+  display: block;
+}
+
+/* Variações de cor dos cards para dar destaque visual */
+.card-bom {
+  background: linear-gradient(150deg, #43a047 0%, #a5d6a7 100%);
+}
+.card-atencao {
+  background: linear-gradient(150deg, #e53935 0%, #ef9a9a 100%);
+}
+.card-faltas {
+  background: linear-gradient(150deg, #8e24aa 0%, #ce93d8 100%);
+}
+.card-frequencia {
+  background: linear-gradient(150deg, #5e35b1 0%, #b39ddb 100%);
+}
+
+/* ==========================================================
+   ÁREA DA TABELA
+   ========================================================== */
+.area-tabela {
+  background: var(--branco);
+  border-radius: 20px;
+  padding: 22px 18px;
+  box-shadow: var(--sombra);
+}
+
+.titulo-tabela {
+  color: var(--roxo);
+  font-size: 1.25rem;
+  margin-bottom: 16px;
+  padding-left: 6px;
+  border-left: 5px solid var(--lilas);
+}
+
+/* Deixa a tabela rolável horizontalmente em telas pequenas */
+.tabela-responsiva {
+  overflow-x: auto;
+  border-radius: 12px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px; /* força rolagem no celular em vez de "espremer" */
+}
+
+thead {
+  background: linear-gradient(135deg, var(--roxo) 0%, var(--lilas) 100%);
+  color: var(--branco);
+}
+
+th, td {
+  padding: 12px 10px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+th:first-child, td:first-child {
+  text-align: left; /* nome da disciplina alinhado à esquerda */
+}
+
+th {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+tbody tr {
+  border-bottom: 1px solid #e8dff0;
+}
+
+tbody tr:nth-child(even) {
+  background: var(--lilas-claro); /* zebradinho suave */
+}
+
+tbody tr:hover {
+  background: #f0e2f7;
+}
+
+/* ----- Etiquetas de situação ----- */
+.etiqueta {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.etiqueta-bom {
+  background: #e8f5e9;
+  color: var(--bom);
+}
+
+.etiqueta-atencao {
+  background: #ffebee;
+  color: var(--atencao);
+}
+
+.etiqueta-neutro {
+  background: #ede7f6;
+  color: var(--neutro);
+}
+
+/* ==========================================================
+   RODAPÉ
+   ========================================================== */
+.rodape {
+  background: var(--roxo-escuro);
+  color: var(--branco);
+  text-align: center;
+  padding: 16px;
+  font-size: 0.8rem;
+  opacity: 0.95;
+}
+
+/* ==========================================================
+   RESPONSIVIDADE (telas menores)
+   ========================================================== */
+
+/* Tablets e celulares grandes */
+@media (max-width: 900px) {
+  .cards-resumo {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Celulares */
+@media (max-width: 560px) {
+  .cabecalho h1 {
+    font-size: 1.5rem;
+  }
+
+  .cards-resumo {
+    grid-template-columns: 1fr; /* um card por linha */
+  }
+
+  .valor-card {
+    font-size: 1.6rem;
+  }
+
+  .conteudo {
+    padding: 20px 12px 32px;
+  }
+
+  .area-tabela {
+    padding: 16px 10px;
+  }
 }

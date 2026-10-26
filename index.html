@@ -1,44 +1,92 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <!-- Garante que o site fique bom no celular também -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Boletim Digital</title>
-  <link rel="stylesheet" href="style.css">
+  <!-- Ligação com o arquivo de estilos -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <header>
-    <h1>📘 Boletim Digital</h1>
-    <p>Aluno: <strong>Ana Silva</strong> — Turma: 8º Ano B</p>
+  <!-- ===== CABEÇALHO ===== -->
+  <header class="cabecalho">
+    <h1>Boletim Digital</h1>
+    <p class="subtitulo">8º Ano — Estudante Exemplo</p>
   </header>
 
-  <main>
-    <!-- Cartão da matéria Matemática -->
-    <article class="cartao">
-      <h2>Matemática</h2>
-      <p class="professor">Prof. Carlos</p>
-      <p class="nota">Nota: <strong>9.5</strong></p>
-      <p class="situacao">Aprovado</p>
-    </article>
+  <main class="conteudo">
 
-    <!-- Cartão da matéria Português -->
-    <article class="cartao">
-      <h2>Português</h2>
-      <p class="professor">Profa. Mariana</p>
-      <p class="nota">Nota: <strong>8.0</strong></p>
-      <p class="situacao">Aprovado</p>
-    </article>
+    <!-- ===== ÁREA DE CARDS DE RESUMO ===== -->
+    <!-- Os valores dentro dos cards serão preenchidos pelo JavaScript -->
+    <section class="cards-resumo" id="cardsResumo">
 
-    <!-- Cartão da matéria Ciências -->
-    <article class="cartao">
-      <h2>Ciências</h2>
-      <p class="professor">Prof. João</p>
-      <p class="nota">Nota: <strong>6.5</strong></p>
-      <p class="situacao">Recuperação</p>
-    </article>
+      <article class="card card-media">
+        <h2>Média Geral</h2>
+        <p class="valor-card" id="mediaGeral">—</p>
+        <span class="descricao-card">das notas disponíveis</span>
+      </article>
+
+      <article class="card card-faltas">
+        <h2>Total de Faltas</h2>
+        <p class="valor-card" id="totalFaltas">—</p>
+        <span class="descricao-card">somando todos os trimestres</span>
+      </article>
+
+      <article class="card card-bom">
+        <h2>Bom Desempenho</h2>
+        <p class="valor-card" id="qtdBom">—</p>
+        <span class="descricao-card">disciplinas com média ≥ 6,0</span>
+      </article>
+
+      <article class="card card-atencao">
+        <h2>Precisam de Atenção</h2>
+        <p class="valor-card" id="qtdAtencao">—</p>
+        <span class="descricao-card">disciplinas com média &lt; 6,0</span>
+      </article>
+
+      <article class="card card-frequencia">
+        <h2>Frequência</h2>
+        <p class="valor-card" id="frequencia">—</p>
+        <span class="descricao-card" id="statusFrequencia">—</span>
+      </article>
+
+    </section>
+
+    <!-- ===== TABELA DE DISCIPLINAS ===== -->
+    <section class="area-tabela">
+      <h2 class="titulo-tabela">Notas por Disciplina</h2>
+
+      <!-- O conteúdo desta tabela será preenchido pelo JavaScript -->
+      <div class="tabela-responsiva">
+        <table>
+          <thead>
+            <tr>
+              <th>Disciplina</th>
+              <th>1º Tri</th>
+              <th>2º Tri</th>
+              <th>3º Tri</th>
+              <th>Média</th>
+              <th>Faltas</th>
+              <th>Situação</th>
+            </tr>
+          </thead>
+          <tbody id="corpoTabela">
+            <!-- As linhas serão criadas automaticamente pelo script.js -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
   </main>
 
+  <!-- ===== RODAPÉ ===== -->
+  <footer class="rodape">
+    <p>Boletim Digital — dados fictícios para fins de estudo.</p>
+  </footer>
+
+  <!-- Ligação com o arquivo JavaScript (no final para carregar depois do HTML) -->
+  <script src="script.js"></script>
 </body>
 </html>
