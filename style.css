@@ -233,6 +233,136 @@ tbody tr:hover {
 }
 
 /* ==========================================================
+   NÚCLEO ADICIONAL: TELA DE ACESSO, EDIÇÃO E STATUS DA API
+   ========================================================== */
+
+.area-login {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.login-container {
+  background: var(--branco);
+  border-radius: 20px;
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--sombra);
+  text-align: center;
+}
+
+.login-container h3 {
+  color: var(--roxo);
+  margin-bottom: 8px;
+}
+
+.info-aluno-login {
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+  margin-bottom: 16px;
+}
+
+.form-login {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.form-login label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  align-self: flex-start;
+}
+
+.form-login input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid var(--lilas-claro);
+  border-radius: 10px;
+  font-size: 1rem;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-login input:focus {
+  border-color: var(--roxo);
+}
+
+/* Botões do projeto seguindo a identidade visual */
+button {
+  background: linear-gradient(135deg, var(--roxo) 0%, var(--roxo-escuro) 100%);
+  color: var(--branco);
+  border: none;
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(106, 27, 154, 0.2);
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+.painel-controle {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+/* Campos de entrada para notas na tabela durante a edição */
+.input-edicao {
+  width: 55px;
+  padding: 6px;
+  border: 1px solid var(--lilas);
+  border-radius: 6px;
+  text-align: center;
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.input-edicao.campo-invalido {
+  border: 2px solid var(--atencao);
+  background-color: #ffebee;
+}
+
+/* Mensagens de feedback (conectando, salvando, erros) */
+.mensagem-status {
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 8px;
+  display: inline-block;
+  margin-top: 8px;
+}
+
+.mensagem-status.sucesso {
+  background-color: #e8f5e9;
+  color: var(--bom);
+}
+
+.mensagem-status.erro {
+  background-color: #ffebee;
+  color: var(--atencao);
+}
+
+.mensagem-status.processando {
+  background-color: #ede7f6;
+  color: var(--roxo);
+}
+
+/* ==========================================================
    RESPONSIVIDADE (telas menores)
    ========================================================== */
 

@@ -18,66 +18,92 @@
 
   <main class="conteudo">
 
-    <!-- ===== ÁREA DE CARDS DE RESUMO ===== -->
-    <!-- Os valores dentro dos cards serão preenchidos pelo JavaScript -->
-    <section class="cards-resumo" id="cardsResumo">
-
-      <article class="card card-media">
-        <h2>Média Geral</h2>
-        <p class="valor-card" id="mediaGeral">—</p>
-        <span class="descricao-card">das notas disponíveis</span>
-      </article>
-
-      <article class="card card-faltas">
-        <h2>Total de Faltas</h2>
-        <p class="valor-card" id="totalFaltas">—</p>
-        <span class="descricao-card">somando todos os trimestres</span>
-      </article>
-
-      <article class="card card-bom">
-        <h2>Bom Desempenho</h2>
-        <p class="valor-card" id="qtdBom">—</p>
-        <span class="descricao-card">disciplinas com média ≥ 6,0</span>
-      </article>
-
-      <article class="card card-atencao">
-        <h2>Precisam de Atenção</h2>
-        <p class="valor-card" id="qtdAtencao">—</p>
-        <span class="descricao-card">disciplinas com média &lt; 6,0</span>
-      </article>
-
-      <article class="card card-frequencia">
-        <h2>Frequência</h2>
-        <p class="valor-card" id="frequencia">—</p>
-        <span class="descricao-card" id="statusFrequencia">—</span>
-      </article>
-
-    </section>
-
-    <!-- ===== TABELA DE DISCIPLINAS ===== -->
-    <section class="area-tabela">
-      <h2 class="titulo-tabela">Notas por Disciplina</h2>
-
-      <!-- O conteúdo desta tabela será preenchido pelo JavaScript -->
-      <div class="tabela-responsiva">
-        <table>
-          <thead>
-            <tr>
-              <th>Disciplina</th>
-              <th>1º Tri</th>
-              <th>2º Tri</th>
-              <th>3º Tri</th>
-              <th>Média</th>
-              <th>Faltas</th>
-              <th>Situação</th>
-            </tr>
-          </thead>
-          <tbody id="corpoTabela">
-            <!-- As linhas serão criadas automaticamente pelo script.js -->
-          </tbody>
-        </table>
+    <!-- ===== TELA DE ACESSO (PIN) ===== -->
+    <section class="area-login" id="areaLogin">
+      <div class="login-container">
+        <h3>Acesso ao Boletim</h3>
+        <p class="info-aluno-login">Turma: <strong>8B</strong> | Chamada: <strong>29</strong></p>
+        <div class="form-login">
+          <label for="campoPin">Digite seu PIN:</label>
+          <input type="password" id="campoPin" placeholder="Ex: 1234" maxlength="10" />
+          <button type="button" id="btnEntrar" onclick="autenticarBoletim()">Entrar</button>
+        </div>
+        <p class="mensagem-status" id="msgStatusLogin" style="display: none;"></p>
       </div>
     </section>
+
+    <!-- ===== CONTEÚDO DO BOLETIM (Oculto antes do login) ===== -->
+    <div id="conteudoBoletim" style="display: none;">
+      
+      <!-- Painel de Controle e Mensagens da API -->
+      <div class="painel-controle">
+        <button type="button" id="btnAlterarDados" onclick="alternarModoEdicao()">Alterar dados</button>
+        <button type="button" id="btnSalvarDados" onclick="salvarAlteracoesAPI()" style="display: none;">Salvar alterações</button>
+        <p class="mensagem-status" id="msgStatusBoletim" style="display: none;"></p>
+      </div>
+
+      <!-- ===== ÁREA DE CARDS DE RESUMO ===== -->
+      <!-- Os valores dentro dos cards serão preenchidos pelo JavaScript -->
+      <section class="cards-resumo" id="cardsResumo">
+
+        <article class="card card-media">
+          <h2>Média Geral</h2>
+          <p class="valor-card" id="mediaGeral">—</p>
+          <span class="descricao-card">das notas disponíveis</span>
+        </article>
+
+        <article class="card card-faltas">
+          <h2>Total de Faltas</h2>
+          <p class="valor-card" id="totalFaltas">—</p>
+          <span class="descricao-card">somando todos os trimestres</span>
+        </article>
+
+        <article class="card card-bom">
+          <h2>Bom Desempenho</h2>
+          <p class="valor-card" id="qtdBom">—</p>
+          <span class="descricao-card">disciplinas com média ≥ 6,0</span>
+        </article>
+
+        <article class="card card-atencao">
+          <h2>Precisam de Atenção</h2>
+          <p class="valor-card" id="qtdAtencao">—</p>
+          <span class="descricao-card">disciplinas com média &lt; 6,0</span>
+        </article>
+
+        <article class="card card-frequencia">
+          <h2>Frequência</h2>
+          <p class="valor-card" id="frequencia">—</p>
+          <span class="descricao-card" id="statusFrequencia">—</span>
+        </article>
+
+      </section>
+
+      <!-- ===== TABELA DE DISCIPLINAS ===== -->
+      <section class="area-tabela">
+        <h2 class="titulo-tabela">Notas por Disciplina</h2>
+
+        <!-- O conteúdo desta tabela será preenchido pelo JavaScript -->
+        <div class="tabela-responsiva">
+          <table>
+            <thead>
+              <tr>
+                <th>Disciplina</th>
+                <th>1º Tri</th>
+                <th>2º Tri</th>
+                <th>3º Tri</th>
+                <th>Média</th>
+                <th>Faltas</th>
+                <th>Situação</th>
+              </tr>
+            </thead>
+            <tbody id="corpoTabela">
+              <!-- As linhas serão criadas automaticamente pelo script.js -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
 
   </main>
 
