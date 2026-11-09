@@ -78,6 +78,15 @@ function somarFaltas(listaDeFaltas) {
   return listaDeFaltas.reduce((total, f) => total + f, 0);
 }
 
+// Garante que o array de faltas seja limpo se vier em formato incorreto ou string da tela
+function extrairFaltasArray(valor) {
+  if (Array.isArray(valor)) return valor;
+  if (typeof valor === "string") {
+    return valor.split(",").map(f => parseInt(f.trim(), 10) || 0);
+  }
+  return;
+}
+
 function definirSituacao(media) {
   if (media === null) return "Nota ainda não disponível";
   return media >= MEDIA_MINIMA ? "Bom desempenho" : "Atenção";
@@ -201,17 +210,18 @@ async function salvarAlteracoesAPI() {
 
   linhasTabela.forEach((linha, index) => {
     const nomeDisciplina = dadosBoletim[index].disciplina;
-    const inputsDaLinha = linha.querySelectorAll(".input-edicao");
+    const inputsNotaLinha = linha.querySelectorAll(".input-nota");
+    const inputsFaltaLinha = linha.querySelectorAll(".input-falta");
     
     // Tratamento de Notas (Vazio vira null, caso contrário vira Float)
-    const t1 = inputsDaLinha[0].value.trim() === "" ? null : parseFloat(inputsDaLinha[0].value.trim().replace(",", "."));
-    const t2 = inputsDaLinha[1].value.trim() === "" ? null : parseFloat(inputsDaLinha[1].value.trim().replace(",", "."));
-    const t3 = inputsDaLinha[2].value.trim() === "" ? null : parseFloat(inputsDaLinha[2].value.trim().replace(",", "."));
+    const t1 = inputsNotaLinha[0].value.trim() === "" ? null : parseFloat(inputsNotaLinha[0].value.trim().replace(",", "."));
+    const t2 = inputsNotaLinha[1].value.trim() === "" ? null : parseFloat(inputsNotaLinha[1].value.trim().replace(",", "."));
+    const t3 = inputsNotaLinha[2].value.trim() === "" ? null : parseFloat(inputsNotaLinha[2].value.trim().replace(",", "."));
     
     // Tratamento de Faltas (Inteiros validados)
-    const f1 = parseInt(inputsDaLinha[3].value.trim(), 10);
-    const f2 = parseInt(inputsDaLinha[4].value.trim(), 10);
-    const f3 = parseInt(inputsDaLinha[5].value.trim(), 10);
+    const f1 = parseInt(inputsFaltaLinha[0].value.trim(), 10);
+    const f2 = parseInt(inputsFaltaLinha[1].value.trim(), 10);
+    const f3 = parseInt(inputsFaltaLinha[2].value.trim(), 10);
 
     novasDisciplinas.push({
       disciplina: nomeDisciplina,
@@ -251,11 +261,3 @@ async function salvarAlteracoesAPI() {
   }
 }
 
-/* ----------------------------------------------------------
-   LÓGICA DE INTERFACE VISUAL E RENDERIZAÇÃO SEGUINTE
-   ---------------------------------------------------------- */
-function alternarModoEdicao() 
-  modoEdicaoAtivo = !modoEdicaoAtivo;
-  document.getElementById("msgStatusBoletim").style.display = "none";
-  preencherTabela();
-  
