@@ -1,7 +1,11 @@
+PASSO 3 — Copie o código abaixo usando o botão Copiar do bloco de código.
+
+```javascript
 /* ==========================================================
-   BOLETIM DIGITAL — SCRIPT (VERSÃO CONECTADA À API)
+   BOLETIM DIGITAL — SCRIPT (VERSÃO CONECTADA À API E GRÁFICOS)
    Responsável por: gerenciar sessão com PIN, conectar com a API,
-   tratar validações estritas de formulário e renderizar a tela.
+   tratar validações estritas de formulário, renderizar a tela
+   e exibir a camada visual de gráficos com Chart.js.
    ========================================================== */
 
 // CONFIGURAÇÃO FIXA DO ALUNO (Não alterável pela página)
@@ -42,6 +46,11 @@ const MEDIA_MINIMA = 6.0;
 
 /* Frequência GERAL fictícia (apenas demonstrativa nesta versão) */
 const FREQUENCIA_DEMONSTRATIVA = 92;
+
+/* Instâncias dos gráficos para destruição/recriação limpa */
+let graficoMedias = null;
+let graficoEvolucao = null;
+let graficoFaltas = null;
 
 /* ----------------------------------------------------------
    FUNÇÃO: normalizarNota(valor)
@@ -260,7 +269,7 @@ async function salvarAlteracoesAPI() {
 }
 
 /* ----------------------------------------------------------
-   LÓGICA DE INTERFACE VISUAL E RENDERIZAÇÃO
+   LÓGICA DE INTERFACE VISUAL E RENDERIZAÇÃO SEGUINTE
    ---------------------------------------------------------- */
 function alternarModoEdicao() {
   modoEdicaoAtivo = !modoEdicaoAtivo;
@@ -396,9 +405,238 @@ function atualizarCards() {
   document.getElementById("statusFrequencia").textContent = FREQUENCIA_DEMONSTRATIVA >= 75 ? "Frequência OK" : "Atenção às faltas";
 }
 
+/* ----------------------------------------------------------
+   CAMADA DE VISUALIZAÇÃO: CAMADA DE GRÁFICOS (SOMENTE LEITURA)
+   ---------------------------------------------------------- */
+
+function atualizarGraficoMedias() {
+  const elCanvas = document.getElementById("graficoMediasDisciplinas");
+  if (!elCanvas) return;
+
+  if (graficoMedias) {
+    graficoMedias.destroy();
+  }
+
+  const nomes = [];
+  const medias = [];
+
+  dadosBoletim.forEach(item => {
+    nomes.push(item.disciplina);
+    const t1 = normalizarNota(item.tri1);
+    const t2 = normalizarNota(item.tri2);
+    const t3 = normalizarNota(item.tri3);
+    const media = calcularMedia([t1, t2, t3]);
+    medias.push(media !== null ? Number(media.toFixed(1)) : null);
+  });
+
+  const ctx = elCanvas.getContext("2d");
+  graficoMedias = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: nomes,
+      datasets: [{
+        label: "Média",
+        data: medias,
+        backgroundColor: "rgba(106, 27, 154, 0.75)",
+        borderColor: "rgba(74, 20, 140, 1)",
+        borderWidth: 1,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      indexAxis: "y",
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const val = context.raw;
+              return val === null ? " Média: —" : ` Média: ${val.toFixed(1).replace(".", ",")}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          min: 0,
+          max: 10,
+          grid: { color: "rgba(0, 0, 0, 0.05)" }
+        },
+        y: {
+          grid: { display: false },
+          ticks: { font: { size: 11 } }
+        }
+      }
+    }
+  });
+}
+
+function atualizarGraficoEvolucao() {
+  const elCanvas = document.getElementById("graficoEvolucaoTrimestres");
+  if (!elCanvas) return;
+
+  if (graficoEvolucao) {
+    graficoEvolucao.destroy();
+  }
+
+  let somaT1 = 0, qtdT1 = 0;
+  let somaT2 = 0, qtdT2 = 0;
+  let somaT3 = 0, qtdT3 = 0;
+
+  dadosBoletim.forEach(item => {
+    const t1 = normalizarNota(item.tri1);
+    const t2 = normalizarNota(item.tri2);
+    const t3 = normalizarNota(item.tri3);
+
+    if (t1 !== null) { somaT1 += t1; qtdT1++; }
+    if (t2 !== null) { somaT2 += t2; qtdT2++; }
+    if (t3 !== null) { somaT3 += t3; qtdT3++; }
+  });
+
+  const medT1 = qtdT1 > 0 ? Number((somaT1 / qtdT1).toFixed(1)) : null;
+  const medT2 = qtdT2 > 0 ? Number((somaT2 / qtdT2).toFixed(1)) : null;
+  const medT3 = qtdT3 > 0 ? Number((somaT3 / qtdT3).toFixed(1)) : null;
+
+  const ctx = elCanvas.getContext("2d");
+  graficoEvolucao = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: ["1º Tri", "2º Tri", "3º Tri"],
+      datasets: [{
+        label: "Média Geral",
+        data: [medT1, medT2, medT3],
+        borderColor: "#6a1b9a",
+        backgroundColor: "rgba(206, 147, 216, 0.3)",
+        borderWidth: 3,
+        fill: true,
+        tension: 0.3,
+        pointBackgroundColor: "#4a148c",
+        pointRadius: 5
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const val = context.raw;
+              return val === null ? " Média: —" : ` Média: ${val.toFixed(1).replace(".", ",")}`;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          min: 0,
+          max: 10,
+          grid: { color: "rgba(0, 0, 0, 0.05)" }
+        },
+        x: {
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+function atualizarGraficoFaltas() {
+  const elCanvas = document.getElementById("graficoFaltasTrimestres");
+  const containerEstado = document.getElementById("estadoFaltas");
+  const cardFaltas = document.getElementById("cardFaltasGrafico");
+  if (!elCanvas) return;
+
+  if (graficoFaltas) {
+    graficoFaltas.destroy();
+  }
+
+  let totalF1 = 0;
+  let totalF2 = 0;
+  let totalF3 = 0;
+
+  dadosBoletim.forEach(item => {
+    const f = Array.isArray(item.faltas) ? item.faltas : [0, 0, 0];
+    totalF1 += Number(f[0]) || 0;
+    totalF2 += Number(f[1]) || 0;
+    totalF3 += Number(f[2]) || 0;
+  });
+
+  const totalAcumuladoFaltas = totalF1 + totalF2 + totalF3;
+  const REFERENCIA_RISCO_INTERNA = 350;
+
+  if (containerEstado && cardFaltas) {
+    if (totalAcumuladoFaltas >= REFERENCIA_RISCO_INTERNA) {
+      containerEstado.innerHTML = `<span class="badge-perigo">Perigo</span>`;
+      cardFaltas.classList.add("card-perigo");
+    } else {
+      containerEstado.innerHTML = "";
+      cardFaltas.classList.remove("card-perigo");
+    }
+  }
+
+  const ctx = elCanvas.getContext("2d");
+  graficoFaltas = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["1º Tri", "2º Tri", "3º Tri"],
+      datasets: [{
+        label: "Faltas",
+        data: [totalF1, totalF2, totalF3],
+        backgroundColor: [
+          "rgba(142, 36, 170, 0.75)",
+          "rgba(106, 27, 154, 0.75)",
+          "rgba(94, 53, 177, 0.75)"
+        ],
+        borderColor: [
+          "#8e24aa",
+          "#6a1b9a",
+          "#5e35b1"
+        ],
+        borderWidth: 1,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return ` Faltas: ${context.raw}`;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: "rgba(0, 0, 0, 0.05)" },
+          ticks: { precision: 0 }
+        },
+        x: {
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+function atualizarGraficos() {
+  atualizarGraficoMedias();
+  atualizarGraficoEvolucao();
+  atualizarGraficoFaltas();
+}
+
 function atualizarTelaCompleta() {
   preencherTabela();
   atualizarCards();
+  atualizarGraficos();
 
   const btnAlterar = document.getElementById("btnAlterarDados");
   const btnSalvar = document.getElementById("btnSalvarDados");
@@ -411,3 +649,5 @@ function atualizarTelaCompleta() {
     btnSalvar.style.display = "none";
   }
 }
+
+```

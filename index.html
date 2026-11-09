@@ -1,3 +1,18 @@
+Estrutura identificada: Projeto Boletim Digital escolar com autenticação por PIN, integração com API, painel de resumo, tabela responsiva e edição interativa.
+Tema visual: Roxo e lilás moderno (`#6a1b9a`, `#ce93d8`, `#f3e5f5`) com degradês e cartões arredondados.
+Estado atual dos dados: `dadosBoletim` (array de objetos com `disciplina`, `tri1`, `tri2`, `tri3` e `faltas`).
+Função usada para média: `calcularMedia()` e `normalizarNota()`.
+Forma de armazenar faltas: Array `faltas: [f1, f2, f3]` em cada objeto de disciplina.
+Núcleo protegido: `autenticarBoletim()`, `salvarAlteracoesAPI()`, `alternarModoEdicao()`, `preencherTabela()`, `normalizarNota()`, `definirSituacao()`, `exibirMensagemFeedback()`.
+Local escolhido para os gráficos: Dentro de `<div id="conteudoBoletim">`, posicionado logo acima da área de tabela de disciplinas (`<section class="area-tabela">`).
+Arquivos que serão alterados: `index.html`, `style.css`, `script.js`.
+Alterações previstas no núcleo de edição/salvamento: nenhuma.
+
+---
+
+PASSO 1 — Copie o código abaixo usando o botão Copiar do bloco de código.
+
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -78,6 +93,33 @@
 
       </section>
 
+      <!-- ===== ÁREA DE GRÁFICOS ===== -->
+      <section class="area-graficos">
+        <article class="grafico-card">
+          <h2>Média por disciplina</h2>
+          <div class="grafico-container grafico-container-alto">
+            <canvas id="graficoMediasDisciplinas"></canvas>
+          </div>
+        </article>
+
+        <article class="grafico-card">
+          <h2>Evolução da média geral</h2>
+          <div class="grafico-container">
+            <canvas id="graficoEvolucaoTrimestres"></canvas>
+          </div>
+        </article>
+
+        <article class="grafico-card" id="cardFaltasGrafico">
+          <div class="cabecalho-grafico-faltas">
+            <h2>Faltas por trimestre</h2>
+            <div id="estadoFaltas"></div>
+          </div>
+          <div class="grafico-container">
+            <canvas id="graficoFaltasTrimestres"></canvas>
+          </div>
+        </article>
+      </section>
+
       <!-- ===== TABELA DE DISCIPLINAS ===== -->
       <section class="area-tabela">
         <h2 class="titulo-tabela">Notas por Disciplina</h2>
@@ -112,6 +154,8 @@
     <p>Boletim Digital — dados fictícios para fins de estudo.</p>
   </footer>
 
+  <!-- Biblioteca Chart.js para renderização de gráficos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Ligação com o arquivo JavaScript (no final para carregar depois do HTML) -->
   <script src="script.js"></script>
 </body>
