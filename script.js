@@ -1,6 +1,4 @@
-PASSO 3 — Copie o código abaixo usando o botão Copiar do bloco de código.
 
-```javascript
 /* ==========================================================
    BOLETIM DIGITAL — SCRIPT (VERSÃO CONECTADA À API E GRÁFICOS)
    Responsável por: gerenciar sessão com PIN, conectar com a API,
