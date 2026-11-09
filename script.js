@@ -8,7 +8,7 @@
 const CONFIG_ALUNO = {
   turma: "8B",
   numeroChamada: 29,
-  apiUrl: "https://profbt.com.br"
+  apiUrl: "https://boletim-api.profbt.com.br"
 };
 
 /* ----------------------------------------------------------
@@ -30,7 +30,7 @@ let dadosBoletim = [
   { disciplina: "Redação e Leitura", tri1: 62, tri2: "6,8", tri3: null, faltas: [2, 1, 1] },
   { disciplina: "Pensamento Lógico", tri1: 48, tri2: 5.6, tri3: "6,0", faltas: [2, 2, 1] },
   { disciplina: "Literatura Arte e Movimento", tri1: "7,7", tri2: 80, tri3: null, faltas: [1, 0, 1] },
-  { disciplina: "Práticas Experimentais", tri1: 58, tri2: "6,2", tri3: 6.4, faltas: [1, 1, 1] },
+  { disciplina: "Práticas Experimentais", tri1: 58, tri2: "6,2", tri3: 6.4, faltas: [1, 1, 1] }
 ];
 
 /* Variáveis de sessão mantidas estritamente em memória */
@@ -75,16 +75,8 @@ function calcularMedia(notas) {
 }
 
 function somarFaltas(listaDeFaltas) {
-  return listaDeFaltas.reduce((total, f) => total + f, 0);
-}
-
-// Garante que o array de faltas seja limpo se vier em formato incorreto ou string da tela
-function extrairFaltasArray(valor) {
-  if (Array.isArray(valor)) return valor;
-  if (typeof valor === "string") {
-    return valor.split(",").map(f => parseInt(f.trim(), 10) || 0);
-  }
-  return;
+  if (!Array.isArray(listaDeFaltas)) return 0;
+  return listaDeFaltas.reduce((total, f) => total + (Number(f) || 0), 0);
 }
 
 function definirSituacao(media) {
@@ -101,6 +93,13 @@ function classeDaSituacao(situacao) {
   if (situacao === "Bom desempenho") return "etiqueta etiqueta-bom";
   if (situacao === "Atenção") return "etiqueta etiqueta-atencao";
   return "etiqueta etiqueta-neutro";
+}
+
+function exibirMensagemFeedback(elemento, texto, tipo) {
+  if (!elemento) return;
+  elemento.textContent = texto;
+  elemento.className = `mensagem-status ${tipo}`;
+  elemento.style.display = "inline-block";
 }
 
 /* ----------------------------------------------------------
@@ -147,7 +146,7 @@ async function autenticarBoletim() {
     campoPin.value = "";
 
     // Regra Obrigatória: Se existirem dados salvos na API, use-os. Caso contrário, mantém locais.
-    if (resultado.dados && resultado.dados.disciplinas && resultado.dados.disciplinas.length > 0) {
+    if (resultado.dados && Array.isArray(resultado.dados.disciplinas)) {
       dadosBoletim = resultado.dados.disciplinas;
     }
 
@@ -210,18 +209,17 @@ async function salvarAlteracoesAPI() {
 
   linhasTabela.forEach((linha, index) => {
     const nomeDisciplina = dadosBoletim[index].disciplina;
-    const inputsNotaLinha = linha.querySelectorAll(".input-nota");
-    const inputsFaltaLinha = linha.querySelectorAll(".input-falta");
+    const inputsDaLinha = linha.querySelectorAll(".input-edicao");
     
     // Tratamento de Notas (Vazio vira null, caso contrário vira Float)
-    const t1 = inputsNotaLinha[0].value.trim() === "" ? null : parseFloat(inputsNotaLinha[0].value.trim().replace(",", "."));
-    const t2 = inputsNotaLinha[1].value.trim() === "" ? null : parseFloat(inputsNotaLinha[1].value.trim().replace(",", "."));
-    const t3 = inputsNotaLinha[2].value.trim() === "" ? null : parseFloat(inputsNotaLinha[2].value.trim().replace(",", "."));
+    const t1 = inputsDaLinha[0].value.trim() === "" ? null : parseFloat(inputsDaLinha[0].value.trim().replace(",", "."));
+    const t2 = inputsDaLinha[1].value.trim() === "" ? null : parseFloat(inputsDaLinha[1].value.trim().replace(",", "."));
+    const t3 = inputsDaLinha[2].value.trim() === "" ? null : parseFloat(inputsDaLinha[2].value.trim().replace(",", "."));
     
     // Tratamento de Faltas (Inteiros validados)
-    const f1 = parseInt(inputsFaltaLinha[0].value.trim(), 10);
-    const f2 = parseInt(inputsFaltaLinha[1].value.trim(), 10);
-    const f3 = parseInt(inputsFaltaLinha[2].value.trim(), 10);
+    const f1 = parseInt(inputsDaLinha[3].value.trim(), 10);
+    const f2 = parseInt(inputsDaLinha[4].value.trim(), 10);
+    const f3 = parseInt(inputsDaLinha[5].value.trim(), 10);
 
     novasDisciplinas.push({
       disciplina: nomeDisciplina,
@@ -261,3 +259,155 @@ async function salvarAlteracoesAPI() {
   }
 }
 
+/* ----------------------------------------------------------
+   LÓGICA DE INTERFACE VISUAL E RENDERIZAÇÃO
+   ---------------------------------------------------------- */
+function alternarModoEdicao() {
+  modoEdicaoAtivo = !modoEdicaoAtivo;
+  document.getElementById("msgStatusBoletim").style.display = "none";
+  preencherTabela();
+
+  const btnAlterar = document.getElementById("btnAlterarDados");
+  const btnSalvar = document.getElementById("btnSalvarDados");
+
+  if (modoEdicaoAtivo) {
+    btnAlterar.textContent = "Cancelar edição";
+    btnSalvar.style.display = "inline-block";
+  } else {
+    btnAlterar.textContent = "Alterar dados";
+    btnSalvar.style.display = "none";
+  }
+}
+
+function preencherTabela() {
+  const corpoTabela = document.getElementById("corpoTabela");
+  corpoTabela.innerHTML = "";
+
+  dadosBoletim.forEach((item) => {
+    const tr = document.createElement("tr");
+
+    const t1 = normalizarNota(item.tri1);
+    const t2 = normalizarNota(item.tri2);
+    const t3 = normalizarNota(item.tri3);
+
+    const media = calcularMedia([t1, t2, t3]);
+    const faltasTrimestres = Array.isArray(item.faltas) ? item.faltas : [0, 0, 0];
+    const totalFaltasDisc = somarFaltas(faltasTrimestres);
+    const situacao = definirSituacao(media);
+
+    if (modoEdicaoAtivo) {
+      // Modo Edição: Renderiza inputs para notas e faltas
+      const tdNome = document.createElement("td");
+      tdNome.textContent = item.disciplina;
+      tr.appendChild(tdNome);
+
+      const valT1 = item.tri1 === null || item.tri1 === undefined ? "" : item.tri1;
+      const valT2 = item.tri2 === null || item.tri2 === undefined ? "" : item.tri2;
+      const valT3 = item.tri3 === null || item.tri3 === undefined ? "" : item.tri3;
+
+      const f1 = faltasTrimestres[0] !== undefined ? faltasTrimestres[0] : 0;
+      const f2 = faltasTrimestres[1] !== undefined ? faltasTrimestres[1] : 0;
+      const f3 = faltasTrimestres[2] !== undefined ? faltasTrimestres[2] : 0;
+
+      tr.innerHTML += `
+        <td><input type="text" class="input-edicao input-nota" value="${valT1}" placeholder="—" /></td>
+        <td><input type="text" class="input-edicao input-nota" value="${valT2}" placeholder="—" /></td>
+        <td><input type="text" class="input-edicao input-nota" value="${valT3}" placeholder="—" /></td>
+        <td>${formatarNota(media)}</td>
+        <td>
+          <input type="text" class="input-edicao input-falta" value="${f1}" title="1º Tri" style="width:30px;" />
+          <input type="text" class="input-edicao input-falta" value="${f2}" title="2º Tri" style="width:30px;" />
+          <input type="text" class="input-edicao input-falta" value="${f3}" title="3º Tri" style="width:30px;" />
+        </td>
+        <td><span class="${classeDaSituacao(situacao)}">${situacao}</span></td>
+      `;
+    } else {
+      // Modo Visualização: Segurança do DOM com textContent para a disciplina
+      const tdNome = document.createElement("td");
+      tdNome.textContent = item.disciplina;
+      tr.appendChild(tdNome);
+
+      const tdT1 = document.createElement("td");
+      tdT1.textContent = formatarNota(t1);
+      tr.appendChild(tdT1);
+
+      const tdT2 = document.createElement("td");
+      tdT2.textContent = formatarNota(t2);
+      tr.appendChild(tdT2);
+
+      const tdT3 = document.createElement("td");
+      tdT3.textContent = formatarNota(t3);
+      tr.appendChild(tdT3);
+
+      const tdMedia = document.createElement("td");
+      tdMedia.textContent = formatarNota(media);
+      tr.appendChild(tdMedia);
+
+      const tdFaltas = document.createElement("td");
+      tdFaltas.textContent = totalFaltasDisc;
+      tr.appendChild(tdFaltas);
+
+      const tdSituacao = document.createElement("td");
+      const spanSituacao = document.createElement("span");
+      spanSituacao.className = classeDaSituacao(situacao);
+      spanSituacao.textContent = situacao;
+      tdSituacao.appendChild(spanSituacao);
+      tr.appendChild(tdSituacao);
+    }
+
+    corpoTabela.appendChild(tr);
+  });
+}
+
+function atualizarCards() {
+  let somaMedias = 0;
+  let qtdDisciplinasComMedia = 0;
+  let totalFaltasGeral = 0;
+  let qtdBom = 0;
+  let qtdAtencao = 0;
+
+  dadosBoletim.forEach((item) => {
+    const t1 = normalizarNota(item.tri1);
+    const t2 = normalizarNota(item.tri2);
+    const t3 = normalizarNota(item.tri3);
+
+    const media = calcularMedia([t1, t2, t3]);
+    const faltasTrimestres = Array.isArray(item.faltas) ? item.faltas : [0, 0, 0];
+    totalFaltasGeral += somarFaltas(faltasTrimestres);
+
+    if (media !== null) {
+      somaMedias += media;
+      qtdDisciplinasComMedia++;
+      if (media >= MEDIA_MINIMA) {
+        qtdBom++;
+      } else {
+        qtdAtencao++;
+      }
+    }
+  });
+
+  const mediaGeralCalculada = qtdDisciplinasComMedia > 0 ? somaMedias / qtdDisciplinasComMedia : null;
+
+  document.getElementById("mediaGeral").textContent = formatarNota(mediaGeralCalculada);
+  document.getElementById("totalFaltas").textContent = totalFaltasGeral;
+  document.getElementById("qtdBom").textContent = qtdBom;
+  document.getElementById("qtdAtencao").textContent = qtdAtencao;
+  document.getElementById("frequencia").textContent = FREQUENCIA_DEMONSTRATIVA + "%";
+  document.getElementById("statusFrequencia").textContent = FREQUENCIA_DEMONSTRATIVA >= 75 ? "Frequência OK" : "Atenção às faltas";
+}
+
+function atualizarTelaCompleta() {
+  preencherTabela();
+  atualizarCards();
+
+  const btnAlterar = document.getElementById("btnAlterarDados");
+  const btnSalvar = document.getElementById("btnSalvarDados");
+
+  if (modoEdicaoAtivo) {
+    btnAlterar.textContent = "Cancelar edição";
+    btnSalvar.style.display = "inline-block";
+  } else {
+    btnAlterar.textContent = "Alterar dados";
+    btnSalvar.style.display = "none";
+  }
+}
