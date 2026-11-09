@@ -254,7 +254,7 @@ async function salvarAlteracoesAPI() {
 /* ----------------------------------------------------------
    LÓGICA DE INTERFACE VISUAL E RENDERIZAÇÃO SEGUINTE
    ---------------------------------------------------------- */
-function alternarModoEdicao() {
+function alternarModoEdicao() 
   modoEdicaoAtivo = !modoEdicaoAtivo;
   document.getElementById("msgStatusBoletim").style.display = "none";
   preencherTabela();
