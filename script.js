@@ -1,4 +1,3 @@
-
 /* ==========================================================
    BOLETIM DIGITAL — SCRIPT (VERSÃO CONECTADA À API E GRÁFICOS)
    Responsável por: gerenciar sessão com PIN, conectar com a API,
@@ -647,5 +646,3 @@ function atualizarTelaCompleta() {
     btnSalvar.style.display = "none";
   }
 }
-
-```
